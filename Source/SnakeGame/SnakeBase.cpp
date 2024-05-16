@@ -20,7 +20,7 @@ void ASnakeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorTickInterval(MovementSpeed);
-	AddSnakeElement(5);
+	AddSnakeElementInit(5);
 }
 
 // Called every frame
@@ -30,19 +30,36 @@ void ASnakeBase::Tick(float DeltaTime)
 	Move();
 }
 
-void ASnakeBase::AddSnakeElement(int ElementsNum)
+void ASnakeBase::AddSnakeElementInit(int ElementsCount)
 {
-	for (int i = 0; i < ElementsNum; ++i)
+	for (int i = 0; i < ElementsCount; ++i)
 	{
-		FVector NewLocation(SnakeElements.Num() * ElementSize, 0, 0);
-		FTransform NewTransform(NewLocation);
-		ASnakeElementBase* NewSnakeElem = GetWorld()->SpawnActor<ASnakeElementBase>(SnakeElementBase, NewTransform);
-		NewSnakeElem->SnakeOwner = this;
-		int32 ElementIndex = SnakeElements.Add(NewSnakeElem);
-		if (ElementIndex == 0)
-		{
-			NewSnakeElem->SetFirstElementType();
-		}
+		AddSnakeElement(false);
+	}
+}
+
+void ASnakeBase::AddSnakeElement(bool bHiddenByDefault)
+{
+	FVector NewLocation(SnakeElements.Num() * ElementSize, 0, 0);
+	FTransform NewTransform(NewLocation);
+	ASnakeElementBase* NewSnakeElem = GetWorld()->SpawnActor<ASnakeElementBase>(SnakeElementBase, NewTransform);
+	NewSnakeElem->SnakeOwner = this;
+	int32 ElementIndex = SnakeElements.Add(NewSnakeElem);
+	if (bHiddenByDefault)
+	{
+		NewSnakeElem->MeshComponent->SetHiddenInGame(true);
+	}
+	if (ElementIndex == 0)
+	{
+		NewSnakeElem->SetFirstElementType();
+	}
+}
+
+void ASnakeBase::RevealIfHidden(TArray<ASnakeElementBase*>::ElementType CurrentElement)
+{
+	if (CurrentElement->MeshComponent->bHiddenInGame)
+	{
+		CurrentElement->MeshComponent->SetHiddenInGame(false);
 	}
 }
 
@@ -67,13 +84,14 @@ void ASnakeBase::Move()
 	}
 
 	SnakeElements[0]->ToggleCollision();
-	
+
 	for (int i = SnakeElements.Num() - 1; i > 0; i--)
 	{
 		auto CurrentElement = SnakeElements[i];
 		auto PrevElement = SnakeElements[i - 1];
 		FVector PrevLocation = PrevElement->GetActorLocation();
 		CurrentElement->SetActorLocation(PrevLocation);
+		RevealIfHidden(CurrentElement);
 	}
 
 	SnakeElements[0]->AddActorWorldOffset(MovementVector);
@@ -88,7 +106,7 @@ void ASnakeBase::SnakeElementOverlap(ASnakeElementBase* OverlappedElement, AActo
 		SnakeElements.Find(OverlappedElement, ElementIndex);
 		bool bIsFirst = ElementIndex == 0;
 		IInteractable* InteractableInterface = Cast<IInteractable>(OtherActor);
-		if(InteractableInterface)
+		if (InteractableInterface)
 		{
 			InteractableInterface->Interact(this, bIsFirst);
 		}

@@ -49,7 +49,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	void AddSnakeElement(int ElementsNum = 1);
+	void AddSnakeElementInit(int ElementsCount = 1);
+	
+	void AddSnakeElement(bool bHiddenByDefault);
+	
+	void RevealIfHidden(TArray<ASnakeElementBase*>::ElementType CurrentElement);
 
 	void Move();
 
