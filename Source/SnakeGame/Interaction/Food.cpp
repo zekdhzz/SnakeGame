@@ -2,7 +2,7 @@
 
 
 #include "Food.h"
-#include "SnakeBase.h"
+#include "SnakeGame/Snake/SnakeBase.h"
 
 // Sets default values
 AFood::AFood()

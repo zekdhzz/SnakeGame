@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactable.h"
 #include "GameFramework/Actor.h"
+#include "SnakeGame/Interaction/Interactable.h"
 #include "SnakeElementBase.generated.h"
 
 class UStaticMeshComponent;

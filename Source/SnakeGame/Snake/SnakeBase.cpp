@@ -3,7 +3,6 @@
 
 #include "SnakeBase.h"
 #include "SnakeElementBase.h"
-#include "Interactable.h"
 
 // Sets default values
 ASnakeBase::ASnakeBase()
