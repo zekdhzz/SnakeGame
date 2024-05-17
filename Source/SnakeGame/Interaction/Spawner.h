@@ -32,6 +32,10 @@ public:
 
 	UPROPERTY()
 	APlayerPawnBase* CurrentPawn;
+
+	UPROPERTY()
+	TArray<FString> BPFoodList;
+
 	
 protected:
 	// Called when the game starts or when spawned

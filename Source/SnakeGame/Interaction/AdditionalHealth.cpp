@@ -3,6 +3,7 @@
 
 #include "AdditionalHealth.h"
 
+#include "Spawner.h"
 #include "SnakeGame/Snake/SnakeBase.h"
 
 AAdditionalHealth::AAdditionalHealth()
@@ -34,5 +35,6 @@ void AAdditionalHealth::Interact(AActor* Interactor, bool bIsHead)
 void AAdditionalHealth::ApplyBuff(ASnakeBase* Snake)
 {
 	Snake->AddHealthPoint();
+	Cast<ASpawner>(this->GetOwner())->RemoveFromSpawnerList(this);
 	this->Destroy();
 }

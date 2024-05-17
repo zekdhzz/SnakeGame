@@ -3,6 +3,7 @@
 
 #include "SpeedUpSnake.h"
 
+#include "Spawner.h"
 #include "SnakeGame/Snake/SnakeBase.h"
 
 ASpeedUpSnake::ASpeedUpSnake()
@@ -34,5 +35,6 @@ void ASpeedUpSnake::Interact(AActor* Interactor, bool bIsHead)
 void ASpeedUpSnake::ApplyBuff(ASnakeBase* Snake)
 {
 	Snake->ChangeSnakeSpeed(0.1f);
+	Cast<ASpawner>(this->GetOwner())->RemoveFromSpawnerList(this);
 	this->Destroy();
 }

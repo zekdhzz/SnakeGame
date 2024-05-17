@@ -26,6 +26,10 @@ ASpawner::ASpawner()
 void ASpawner::BeginPlay()
 {
 	World = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
+	BPFoodList.Add("/Game/Blueprints/Interactable/BP_AdditionalSnakeElement.BP_AdditionalSnakeElement");
+	BPFoodList.Add("/Game/Blueprints/Interactable/BP_AdditionalHealth.BP_AdditionalHealth");
+	BPFoodList.Add("/Game/Blueprints/Interactable/Bp_SpeedUpSnake.Bp_SpeedUpSnake");
+
 	Super::BeginPlay();
 }
 
@@ -41,8 +45,8 @@ void ASpawner::Tick(float DeltaTime)
 
 void ASpawner::SpawnFood()
 {
-	const TCHAR* BPName = TEXT("/Game/Blueprints/Interactable/BP_AdditionalSnakeElement.BP_AdditionalSnakeElement");
-	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr, BPName));
+	FString bp = BPFoodList[FMath::RandRange(0, 2)];
+	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr, *bp));
 	if (World)
 	{
 		auto Food = World->SpawnActor<AActor>(Cast<UBlueprint>(SpawnActor)->GeneratedClass,
