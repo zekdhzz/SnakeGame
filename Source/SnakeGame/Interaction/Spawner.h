@@ -20,6 +20,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	UWorld* World;
 	
+	FActorSpawnParameters SpawnParams;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -29,4 +31,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SpawnFood();
+
+	FVector GenerateRandomCoordinatesInRange();
 };

@@ -10,6 +10,12 @@ ASpawner::ASpawner()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	World = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport)->World();
+
+	SpawnParams.Owner = this;
+	//SpawnParams.SpawnCollisionHandlingOverride =
+	//	ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 }
 
 // Called when the game starts or when spawned
@@ -26,14 +32,18 @@ void ASpawner::Tick(float DeltaTime)
 
 void ASpawner::SpawnFood()
 {
-	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr,
-		TEXT("/Game/Blueprints/Interactable/BP_AdditionalSnakeElement.BP_AdditionalSnakeElement")));
-	UBlueprint* GeneratedBP = Cast<UBlueprint>(SpawnActor);
+	const TCHAR* BPName = TEXT("/Game/Blueprints/Interactable/BP_AdditionalSnakeElement.BP_AdditionalSnakeElement");
+	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr,BPName));
 	if (World)
 	{
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
-		World->SpawnActor<AActor>(GeneratedBP->GeneratedClass, FTransform(FVector(20, 20, 0)), SpawnParams);
+		World->SpawnActor<AActor>(Cast<UBlueprint>(SpawnActor)->GeneratedClass,
+		                          FTransform(GenerateRandomCoordinatesInRange()), SpawnParams);
 	}
+}
+
+FVector ASpawner::GenerateRandomCoordinatesInRange()
+{
+	int X = FMath::RandRange(-700, 700);
+	int Y = FMath::RandRange(-700, 700);
+	return FVector(X, Y, 10);
 }
