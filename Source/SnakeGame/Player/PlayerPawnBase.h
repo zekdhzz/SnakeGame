@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawnBase.generated.h"
 
+class ASpawner;
 class UStatHUD;
 class ASnakeBase;
 class UCameraComponent;
@@ -36,9 +37,11 @@ public:
 
 	int32 InitHealth = 0;
 	int32 CurrentHealth = 0;
-	
-	//int32 InitSnakeSize = 0;
+
 	int32 CurrentSnakeSize = 0;
+
+	UPROPERTY(EditDefaultsOnly)
+	ASpawner* Spawner;
 
 protected:
 	// Called when the game starts or when spawned
@@ -66,4 +69,8 @@ public:
 
 	UFUNCTION()
 	void HandlePlayerHorizontalInput(float value);
+
+	void CreateSpawner();
+
+	void SpawnInteractableActor();
 };

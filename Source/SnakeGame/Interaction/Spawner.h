@@ -3,32 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Food.h"
-#include "AdditionalHealth.generated.h"
+#include "GameFramework/Actor.h"
+#include "Spawner.generated.h"
 
-/**
- * 
- */
+class AFood;
+
 UCLASS()
-class SNAKEGAME_API AAdditionalHealth : public AFood
+class SNAKEGAME_API ASpawner : public AActor
 {
 	GENERATED_BODY()
-
+	
 public:	
 	// Sets default values for this actor's properties
-	AAdditionalHealth();
+	ASpawner();
+	
+	UPROPERTY(EditDefaultsOnly)
+	UWorld* World;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	
+public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	virtual void Interact(AActor* Interactor, bool bIsHead) override;
-	
-	virtual void ApplyBuff(ASnakeBase* Snake) override;
-	
+
+	void SpawnFood();
 };

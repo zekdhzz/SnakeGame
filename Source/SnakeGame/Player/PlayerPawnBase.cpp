@@ -7,6 +7,7 @@
 #include "SnakeGame/Snake/SnakeBase.h"
 #include "SnakeGame/UI/StatHUD.h"
 #include "Blueprint/UserWidget.h"
+#include "SnakeGame/Interaction/Spawner.h"
 
 // Sets default values
 APlayerPawnBase::APlayerPawnBase()
@@ -29,6 +30,8 @@ void APlayerPawnBase::BeginPlay()
 	Super::BeginPlay();
 	SetActorRotation(FRotator(-90, 0, 0));
 	SetHUD();
+	CreateSpawner();
+	SpawnInteractableActor();
 	CreateSnakeActor();
 }
 
@@ -120,4 +123,14 @@ void APlayerPawnBase::HandlePlayerHorizontalInput(float value)
 			SnakeActor->LastMovementDirection = EMovementDirection::LEFT;
 		}
 	}
+}
+
+void APlayerPawnBase::CreateSpawner()
+{
+	Spawner = GetWorld()->SpawnActor<ASpawner>(ASpawner::StaticClass(), FTransform());
+}
+
+void APlayerPawnBase::SpawnInteractableActor()
+{
+	Spawner->SpawnFood();
 }
