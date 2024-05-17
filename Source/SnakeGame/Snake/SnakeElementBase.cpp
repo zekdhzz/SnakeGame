@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// SnakeGame.
 
 
 #include "SnakeElementBase.h"
@@ -41,7 +41,7 @@ void ASnakeElementBase::Interact(AActor* Interactor, bool bIsHead)
 		{
 			SnakeElement->Destroy();
 		}
-		Snake->Destroy();
+		Snake->Death();
 	}
 }
 

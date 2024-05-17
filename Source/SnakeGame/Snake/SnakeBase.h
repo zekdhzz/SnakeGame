@@ -1,11 +1,14 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// SnakeGame.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
+#include "SnakeGame/UI/StatHUD.h"
 #include "SnakeBase.generated.h"
 
+class APlayerPawnBase;
 class ASnakeElementBase;
 
 UENUM()
@@ -26,6 +29,9 @@ public:
 	// Sets default values for this actor's properties
 	ASnakeBase();
 
+	int32 CurrentHealth = 0;
+	int32 CurrentSnakeSize = 0;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASnakeElementBase> SnakeElementBase;
 
@@ -40,6 +46,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	float MovementSpeed;
+
+	APlayerPawnBase* CurrentPawn;
+	
+	UStatHUD* PlayerHUD;
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,6 +66,8 @@ public:
 	void RevealIfHidden(TArray<ASnakeElementBase*>::ElementType CurrentElement);
 
 	void Move();
+
+	void Death();
 
 	UFUNCTION()
 	void SnakeElementOverlap(ASnakeElementBase* OverlappedElement, AActor* OtherActor);

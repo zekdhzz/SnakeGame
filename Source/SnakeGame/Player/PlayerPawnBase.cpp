@@ -1,10 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// SnakeGame.
 
 
 #include "PlayerPawnBase.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "SnakeGame/Snake/SnakeBase.h"
+#include "SnakeGame/UI/StatHUD.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 APlayerPawnBase::APlayerPawnBase()
@@ -14,6 +16,9 @@ APlayerPawnBase::APlayerPawnBase()
 
 	PawnCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PawnCamera"));
 	RootComponent = PawnCamera;
+
+	PlayerHUD = nullptr;
+	PlayerHUDClass = nullptr;
 }
 
 // Called when the game starts or when spawned
@@ -22,6 +27,18 @@ void APlayerPawnBase::BeginPlay()
 	Super::BeginPlay();
 	SetActorRotation(FRotator(-90, 0, 0));
 	CreateSnakeActor();
+	SetHUD();
+}
+
+void APlayerPawnBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (PlayerHUD)
+	{
+		PlayerHUD->RemoveFromParent();
+		PlayerHUD = nullptr;
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame
@@ -42,6 +59,28 @@ void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void APlayerPawnBase::CreateSnakeActor()
 {
 	SnakeActor = GetWorld()->SpawnActor<ASnakeBase>(SnakeActorClass, FTransform());
+}
+
+void APlayerPawnBase::SetHUD()
+{
+	if (IsLocallyControlled() && PlayerHUDClass)
+	{
+		APlayerController* FPC = GetController<APlayerController>();
+		check(FPC);
+		PlayerHUD = CreateWidget<UStatHUD>(FPC, PlayerHUDClass);
+		check(PlayerHUD);
+		PlayerHUD->AddToPlayerScreen();
+	}
+}
+
+void APlayerPawnBase::UpdateHealth(int32 Amount)
+{
+	PlayerHUD->SetHealth(Amount);
+}
+
+void APlayerPawnBase::UpdateSnakeSize(int32 Amount)
+{
+	PlayerHUD->SetSnakeSize(Amount);
 }
 
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)

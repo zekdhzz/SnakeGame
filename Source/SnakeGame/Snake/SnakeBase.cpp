@@ -1,8 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// SnakeGame.
 
 
 #include "SnakeBase.h"
 #include "SnakeElementBase.h"
+#include "SnakeGame/Player/PlayerPawnBase.h"
+#include "SnakeGame/UI/StatHUD.h"
 
 // Sets default values
 ASnakeBase::ASnakeBase()
@@ -12,6 +14,7 @@ ASnakeBase::ASnakeBase()
 	ElementSize = 100.f;
 	MovementSpeed = 10.f;
 	LastMovementDirection = EMovementDirection::DOWN;
+	CurrentPawn = Cast<APlayerPawnBase>(UGameplayStatics::GetPlayerPawn(this, 0));
 }
 
 // Called when the game starts or when spawned
@@ -95,6 +98,12 @@ void ASnakeBase::Move()
 
 	SnakeElements[0]->AddActorWorldOffset(MovementVector);
 	SnakeElements[0]->ToggleCollision();
+}
+
+void ASnakeBase::Death()
+{
+	CurrentPawn->UpdateHealth(-1);
+	Destroy();
 }
 
 void ASnakeBase::SnakeElementOverlap(ASnakeElementBase* OverlappedElement, AActor* OtherActor)
