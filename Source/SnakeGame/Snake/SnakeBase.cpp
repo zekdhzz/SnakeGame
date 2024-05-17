@@ -41,7 +41,7 @@ void ASnakeBase::AddSnakeElementInit(int ElementsCount)
 	}
 }
 
-void ASnakeBase::AddSnakeElement(bool bHiddenByDefault)
+void ASnakeBase::AddSnakeElement(bool bHiddenByDefault = true)
 {
 	FVector NewLocation(SnakeElements.Num() * ElementSize, 0, 0);
 	FTransform NewTransform(NewLocation);
@@ -65,6 +65,17 @@ void ASnakeBase::RevealIfHidden(TArray<ASnakeElementBase*>::ElementType CurrentE
 	{
 		CurrentElement->MeshComponent->SetHiddenInGame(false);
 	}
+}
+
+void ASnakeBase::AddHealthPoint()
+{
+	CurrentPawn->UpdateHealth(1);
+}
+
+void ASnakeBase::ChangeSnakeSpeed(float Amount)
+{
+	MovementSpeed -= Amount;
+	SetActorTickInterval(MovementSpeed);
 }
 
 void ASnakeBase::Move()

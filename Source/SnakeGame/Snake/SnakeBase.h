@@ -63,6 +63,10 @@ public:
 	
 	void RevealIfHidden(TArray<ASnakeElementBase*>::ElementType CurrentElement);
 
+	void AddHealthPoint();
+
+	void ChangeSnakeSpeed(float Amount);
+
 	void Move();
 
 	void Death();

@@ -1,29 +1,29 @@
-// SnakeGame.
+// SnakeGame
 
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Interactable.h"
-#include "GameFramework/Actor.h"
-#include "Food.generated.h"
+#include "Food.h"
+#include "AdditionalSnakeElement.generated.h"
 
-class ASnakeBase;
-
-UCLASS(Abstract)
-class SNAKEGAME_API AFood : public AActor, public IInteractable
+/**
+ * 
+ */
+UCLASS()
+class SNAKEGAME_API AAdditionalSnakeElement : public AFood
 {
 	GENERATED_BODY()
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	AFood();
+	AAdditionalSnakeElement();
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual void Interact(AActor* Interactor, bool bIsHead) override;
 	
-	virtual void ApplyBuff(ASnakeBase* Snake);
+	virtual void ApplyBuff(ASnakeBase* Snake) override;
 };
