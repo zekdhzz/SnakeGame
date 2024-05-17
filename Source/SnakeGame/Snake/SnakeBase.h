@@ -28,9 +28,6 @@ class SNAKEGAME_API ASnakeBase : public AActor
 public:
 	// Sets default values for this actor's properties
 	ASnakeBase();
-
-	int32 CurrentHealth = 0;
-	int32 CurrentSnakeSize = 0;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASnakeElementBase> SnakeElementBase;
@@ -47,9 +44,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float MovementSpeed;
 
+	UPROPERTY()
 	APlayerPawnBase* CurrentPawn;
-	
-	UStatHUD* PlayerHUD;
+
+	int32 InitSnakeSize;
 
 protected:
 	// Called when the game starts or when spawned

@@ -15,6 +15,7 @@ ASnakeBase::ASnakeBase()
 	MovementSpeed = 10.f;
 	LastMovementDirection = EMovementDirection::DOWN;
 	CurrentPawn = Cast<APlayerPawnBase>(UGameplayStatics::GetPlayerPawn(this, 0));
+	InitSnakeSize = 5;
 }
 
 // Called when the game starts or when spawned
@@ -22,7 +23,7 @@ void ASnakeBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorTickInterval(MovementSpeed);
-	AddSnakeElementInit(5);
+	AddSnakeElementInit(InitSnakeSize);
 }
 
 // Called every frame
@@ -55,6 +56,7 @@ void ASnakeBase::AddSnakeElement(bool bHiddenByDefault)
 	{
 		NewSnakeElem->SetFirstElementType();
 	}
+	CurrentPawn->UpdateSnakeSize(1);
 }
 
 void ASnakeBase::RevealIfHidden(TArray<ASnakeElementBase*>::ElementType CurrentElement)

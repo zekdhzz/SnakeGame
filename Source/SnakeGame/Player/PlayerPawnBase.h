@@ -24,7 +24,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	UStatHUD* PlayerHUD;
-	
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UStatHUD> PlayerHUDClass;
 
@@ -33,14 +33,20 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASnakeBase> SnakeActorClass;
+
+	int32 InitHealth = 0;
+	int32 CurrentHealth = 0;
 	
+	//int32 InitSnakeSize = 0;
+	int32 CurrentSnakeSize = 0;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -50,16 +56,14 @@ public:
 	void CreateSnakeActor();
 
 	void SetHUD();
-	
+
 	void UpdateHealth(int32 Amount);
-	
+
 	void UpdateSnakeSize(int32 Amount);
 
 	UFUNCTION()
 	void HandlePlayerVerticalInput(float value);
-	
+
 	UFUNCTION()
 	void HandlePlayerHorizontalInput(float value);
-
-	
 };

@@ -19,6 +19,8 @@ APlayerPawnBase::APlayerPawnBase()
 
 	PlayerHUD = nullptr;
 	PlayerHUDClass = nullptr;
+	
+	InitHealth = 3;
 }
 
 // Called when the game starts or when spawned
@@ -26,8 +28,8 @@ void APlayerPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorRotation(FRotator(-90, 0, 0));
-	CreateSnakeActor();
 	SetHUD();
+	CreateSnakeActor();
 }
 
 void APlayerPawnBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -59,6 +61,7 @@ void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void APlayerPawnBase::CreateSnakeActor()
 {
 	SnakeActor = GetWorld()->SpawnActor<ASnakeBase>(SnakeActorClass, FTransform());
+	UpdateHealth(InitHealth);
 }
 
 void APlayerPawnBase::SetHUD()
@@ -66,21 +69,27 @@ void APlayerPawnBase::SetHUD()
 	if (IsLocallyControlled() && PlayerHUDClass)
 	{
 		APlayerController* FPC = GetController<APlayerController>();
-		check(FPC);
-		PlayerHUD = CreateWidget<UStatHUD>(FPC, PlayerHUDClass);
-		check(PlayerHUD);
-		PlayerHUD->AddToPlayerScreen();
+		if (FPC)
+		{
+			PlayerHUD = CreateWidget<UStatHUD>(FPC, PlayerHUDClass);
+			if (PlayerHUD)
+			{
+				PlayerHUD->AddToPlayerScreen();
+			}
+		}
 	}
 }
 
 void APlayerPawnBase::UpdateHealth(int32 Amount)
 {
-	PlayerHUD->SetHealth(Amount);
+	CurrentHealth += Amount;
+	PlayerHUD->SetHealth(CurrentHealth);
 }
 
 void APlayerPawnBase::UpdateSnakeSize(int32 Amount)
 {
-	PlayerHUD->SetSnakeSize(Amount);
+	CurrentSnakeSize += Amount;
+	PlayerHUD->SetSnakeSize(CurrentSnakeSize);
 }
 
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)
