@@ -19,3 +19,8 @@ void UStatHUD::SetSnakeSize(int32 Amount)
 {
 	SnakeSizeLabel->SetText(FText::AsNumber(Amount));
 }
+
+void UStatHUD::SetPoints(int32 Amount)
+{
+	PointsLabel->SetText(FText::AsNumber(Amount));
+}

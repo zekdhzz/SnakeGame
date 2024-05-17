@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AdditionalSnakeElement.h"
 #include "GameFramework/Actor.h"
 #include "Spawner.generated.h"
 
+class APlayerPawnBase;
 class AFood;
 
 UCLASS()
@@ -21,6 +23,15 @@ public:
 	UWorld* World;
 	
 	FActorSpawnParameters SpawnParams;
+
+	UPROPERTY()
+	TArray<AFood*> SpawnedFoodList;
+
+	UPROPERTY()
+	int32 MinFoodCount;
+
+	UPROPERTY()
+	APlayerPawnBase* CurrentPawn;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -33,4 +44,6 @@ public:
 	void SpawnFood();
 
 	FVector GenerateRandomCoordinatesInRange();
+	
+	void RemoveFromSpawnerList(AFood* Food);
 };

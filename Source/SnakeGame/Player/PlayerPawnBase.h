@@ -37,8 +37,8 @@ public:
 
 	int32 InitHealth = 0;
 	int32 CurrentHealth = 0;
-
 	int32 CurrentSnakeSize = 0;
+	int32 CurrentPoints = 0;
 
 	UPROPERTY(EditDefaultsOnly)
 	ASpawner* Spawner;
@@ -63,6 +63,8 @@ public:
 	void UpdateHealth(int32 Amount);
 
 	void UpdateSnakeSize(int32 Amount);
+
+	void UpdatePointsCount(int32 Amount);
 
 	UFUNCTION()
 	void HandlePlayerVerticalInput(float value);

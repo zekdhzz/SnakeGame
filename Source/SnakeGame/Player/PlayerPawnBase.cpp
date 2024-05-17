@@ -95,6 +95,12 @@ void APlayerPawnBase::UpdateSnakeSize(int32 Amount)
 	PlayerHUD->SetSnakeSize(CurrentSnakeSize);
 }
 
+void APlayerPawnBase::UpdatePointsCount(int32 Amount)
+{
+	CurrentPoints += Amount;
+	PlayerHUD->SetPoints(CurrentPoints);
+}
+
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)
 {
 	if (IsValid(SnakeActor))

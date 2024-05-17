@@ -3,6 +3,7 @@
 
 #include "AdditionalSnakeElement.h"
 
+#include "Spawner.h"
 #include "SnakeGame/Snake/SnakeBase.h"
 
 AAdditionalSnakeElement::AAdditionalSnakeElement()
@@ -24,7 +25,7 @@ void AAdditionalSnakeElement::Interact(AActor* Interactor, bool bIsHead)
 	if (bIsHead)
 	{
 		ASnakeBase* Snake = Cast<ASnakeBase>(Interactor);
-		if(IsValid(Snake))
+		if (IsValid(Snake))
 		{
 			ApplyBuff(Snake);
 		}
@@ -34,5 +35,6 @@ void AAdditionalSnakeElement::Interact(AActor* Interactor, bool bIsHead)
 void AAdditionalSnakeElement::ApplyBuff(ASnakeBase* Snake)
 {
 	Snake->AddSnakeElement(true);
+	Cast<ASpawner>(this->GetOwner())->RemoveFromSpawnerList(this);
 	this->Destroy();
 }
