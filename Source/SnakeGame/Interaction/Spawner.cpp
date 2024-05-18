@@ -4,6 +4,7 @@
 #include "Spawner.h"
 #include "AdditionalHealth.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "SnakeGame/Player/PlayerPawnBase.h"
 
 // Sets default values
@@ -13,13 +14,12 @@ ASpawner::ASpawner()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpawnParams.Owner = this;
-	//SpawnParams.SpawnCollisionHandlingOverride =
-	//	ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.SpawnCollisionHandlingOverride =
-		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+		ESpawnActorCollisionHandlingMethod::DontSpawnIfColliding;
 
 	CurrentPawn = Cast<APlayerPawnBase>(UGameplayStatics::GetPlayerPawn(this, 0));
 	MinFoodCount = 3;
+	SetActorTickInterval(0.5f);
 }
 
 // Called when the game starts or when spawned
@@ -29,6 +29,7 @@ void ASpawner::BeginPlay()
 	BPFoodList.Add("/Game/Blueprints/Interactable/BP_AdditionalSnakeElement.BP_AdditionalSnakeElement");
 	BPFoodList.Add("/Game/Blueprints/Interactable/BP_AdditionalHealth.BP_AdditionalHealth");
 	BPFoodList.Add("/Game/Blueprints/Interactable/Bp_SpeedUpSnake.Bp_SpeedUpSnake");
+	MultipleSpawn();
 
 	Super::BeginPlay();
 }
@@ -37,33 +38,54 @@ void ASpawner::BeginPlay()
 void ASpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (SpawnedFoodList.Num() <= MinFoodCount)
-	{
-		SpawnFood();
-	}
 }
 
 void ASpawner::SpawnFood()
 {
-	FString bp = BPFoodList[FMath::RandRange(0, 2)];
-	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr, *bp));
+	// UE_LOG(LogTemp, Error, TEXT("SpawnedFoodList lenth: %s"), *FString::Printf(TEXT("%d"), SpawnedFoodList.Num()));
+	FString BPPath;
+	if (UKismetMathLibrary::RandomBoolWithWeight(0.8f))
+	{
+		BPPath = BPFoodList[0];
+	}
+	else if (UKismetMathLibrary::RandomBoolWithWeight(0.1f))
+	{
+		BPPath = BPFoodList[1];
+	}
+	else
+	{
+		BPPath = BPFoodList[2];
+	}
+	//FString BPPath = BPFoodList[FMath::RandRange(0, 2)];
+	UObject* SpawnActor = Cast<UObject>(StaticLoadObject(UObject::StaticClass(), nullptr, *BPPath));
 	if (World)
 	{
 		auto Food = World->SpawnActor<AActor>(Cast<UBlueprint>(SpawnActor)->GeneratedClass,
 		                                      FTransform(GenerateRandomCoordinatesInRange()), SpawnParams);
-		SpawnedFoodList.Add(Cast<AFood>(Food));
+		if (Food)
+		{
+			SpawnedFoodList.Add(Cast<AFood>(Food));
+		}
 	}
 }
 
 FVector ASpawner::GenerateRandomCoordinatesInRange()
 {
-	float X = FMath::RandRange(-700, 700);
-	float Y = FMath::RandRange(-700, 700);
-	return FVector(X, Y, 10);
+	return FVector(FMath::RandRange(-700, 700), FMath::RandRange(-700, 700), 10);
 }
 
 void ASpawner::RemoveFromSpawnerList(AFood* Food)
 {
-	int32 count = SpawnedFoodList.Remove(Food);
-	CurrentPawn->UpdatePointsCount(count);
+	CurrentPawn->UpdatePointsCount(SpawnedFoodList.Remove(Food));
+	// UE_LOG(LogTemp, Error, TEXT("RemoveFromSpawnerList SpawnedFoodList lenth: %s"),
+	//        *FString::Printf(TEXT("%d"), SpawnedFoodList.Num()));
+	MultipleSpawn();
+}
+
+void ASpawner::MultipleSpawn()
+{
+	while (SpawnedFoodList.Num() < (MinFoodCount))
+	{
+		SpawnFood();
+	}
 }

@@ -28,7 +28,7 @@ public:
 	TArray<AFood*> SpawnedFoodList;
 
 	UPROPERTY()
-	int32 MinFoodCount;
+	int32 MinFoodCount = 0;
 
 	UPROPERTY()
 	APlayerPawnBase* CurrentPawn;
@@ -50,4 +50,6 @@ public:
 	FVector GenerateRandomCoordinatesInRange();
 	
 	void RemoveFromSpawnerList(AFood* Food);
+
+	void MultipleSpawn();
 };

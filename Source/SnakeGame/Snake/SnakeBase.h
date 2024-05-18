@@ -71,6 +71,8 @@ public:
 
 	void Death();
 
+	void Respawn();
+
 	UFUNCTION()
 	void SnakeElementOverlap(ASnakeElementBase* OverlappedElement, AActor* OtherActor);
 };

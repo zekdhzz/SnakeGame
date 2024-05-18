@@ -21,9 +21,9 @@ ASnakeBase::ASnakeBase()
 // Called when the game starts or when spawned
 void ASnakeBase::BeginPlay()
 {
-	Super::BeginPlay();
 	SetActorTickInterval(MovementSpeed);
 	AddSnakeElementInit(InitSnakeSize);
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -116,7 +116,17 @@ void ASnakeBase::Move()
 void ASnakeBase::Death()
 {
 	CurrentPawn->UpdateHealth(-1);
+	if (CurrentPawn->CurrentHealth)
+	{
+		Respawn();
+	}
 	Destroy();
+}
+
+void ASnakeBase::Respawn()
+{
+	CurrentPawn->UpdateSnakeSize(-CurrentPawn->CurrentSnakeSize);
+	CurrentPawn->CreateSnakeActor();
 }
 
 void ASnakeBase::SnakeElementOverlap(ASnakeElementBase* OverlappedElement, AActor* OtherActor)

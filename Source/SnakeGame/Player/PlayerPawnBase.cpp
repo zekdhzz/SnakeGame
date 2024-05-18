@@ -31,8 +31,8 @@ void APlayerPawnBase::BeginPlay()
 	SetActorRotation(FRotator(-90, 0, 0));
 	SetHUD();
 	CreateSpawner();
-	SpawnInteractableActor();
 	CreateSnakeActor();
+	UpdateHealth(InitHealth);
 }
 
 void APlayerPawnBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -64,7 +64,6 @@ void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void APlayerPawnBase::CreateSnakeActor()
 {
 	SnakeActor = GetWorld()->SpawnActor<ASnakeBase>(SnakeActorClass, FTransform());
-	UpdateHealth(InitHealth);
 }
 
 void APlayerPawnBase::SetHUD()
@@ -136,7 +135,4 @@ void APlayerPawnBase::CreateSpawner()
 	Spawner = GetWorld()->SpawnActor<ASpawner>(ASpawner::StaticClass(), FTransform());
 }
 
-void APlayerPawnBase::SpawnInteractableActor()
-{
-	Spawner->SpawnFood();
-}
+
