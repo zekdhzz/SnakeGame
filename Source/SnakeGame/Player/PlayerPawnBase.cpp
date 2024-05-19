@@ -1,10 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// SnakeGame.
 
 
 #include "PlayerPawnBase.h"
 #include "Engine/Classes/Camera/CameraComponent.h"
-#include "SnakeBase.h"
 #include "Components/InputComponent.h"
+#include "SnakeGame/Snake/SnakeBase.h"
+#include "SnakeGame/UI/StatHUD.h"
+#include "Blueprint/UserWidget.h"
+#include "SnakeGame/Interaction/Spawner.h"
 
 // Sets default values
 APlayerPawnBase::APlayerPawnBase()
@@ -14,6 +17,11 @@ APlayerPawnBase::APlayerPawnBase()
 
 	PawnCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("PawnCamera"));
 	RootComponent = PawnCamera;
+
+	PlayerHUD = nullptr;
+	PlayerHUDClass = nullptr;
+	
+	InitHealth = 3;
 }
 
 // Called when the game starts or when spawned
@@ -21,7 +29,21 @@ void APlayerPawnBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorRotation(FRotator(-90, 0, 0));
+	SetHUD();
+	CreateSpawner();
 	CreateSnakeActor();
+	UpdateHealth(InitHealth);
+}
+
+void APlayerPawnBase::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (PlayerHUD)
+	{
+		PlayerHUD->RemoveFromParent();
+		PlayerHUD = nullptr;
+	}
+
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame
@@ -42,6 +64,40 @@ void APlayerPawnBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 void APlayerPawnBase::CreateSnakeActor()
 {
 	SnakeActor = GetWorld()->SpawnActor<ASnakeBase>(SnakeActorClass, FTransform());
+}
+
+void APlayerPawnBase::SetHUD()
+{
+	if (IsLocallyControlled() && PlayerHUDClass)
+	{
+		APlayerController* FPC = GetController<APlayerController>();
+		if (FPC)
+		{
+			PlayerHUD = CreateWidget<UStatHUD>(FPC, PlayerHUDClass);
+			if (PlayerHUD)
+			{
+				PlayerHUD->AddToPlayerScreen();
+			}
+		}
+	}
+}
+
+void APlayerPawnBase::UpdateHealth(int32 Amount)
+{
+	CurrentHealth += Amount;
+	PlayerHUD->SetHealth(CurrentHealth);
+}
+
+void APlayerPawnBase::UpdateSnakeSize(int32 Amount)
+{
+	CurrentSnakeSize += Amount;
+	PlayerHUD->SetSnakeSize(CurrentSnakeSize);
+}
+
+void APlayerPawnBase::UpdatePointsCount(int32 Amount)
+{
+	CurrentPoints += Amount;
+	PlayerHUD->SetPoints(CurrentPoints);
 }
 
 void APlayerPawnBase::HandlePlayerVerticalInput(float value)
@@ -73,3 +129,10 @@ void APlayerPawnBase::HandlePlayerHorizontalInput(float value)
 		}
 	}
 }
+
+void APlayerPawnBase::CreateSpawner()
+{
+	Spawner = GetWorld()->SpawnActor<ASpawner>(ASpawner::StaticClass(), FTransform());
+}
+
+
